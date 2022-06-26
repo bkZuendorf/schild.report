@@ -14,14 +14,30 @@
     8: 'Ausbildung beendet',
     9: 'Abgänger'
   }
+
+  let selectGroup= []
+
+  function select(grp) {
+    if(selectGroup.filter(val => grp==val).length) {
+      // nehme Einträge raus
+      $selected = $selected.filter(val => val.Status!=grp)
+    } else {
+      // nehme alle Einträge rein
+      console.log("hier")
+      $selected = $selected.filter(val => val.Status!=grp)
+      $selected = [...$selected, ...$schueler_sortiert.filter( gruppen => gruppen[0]==grp)[0][1]]
+    }
+  }
+
 </script>
+
 {#each $schueler_sortiert as gruppe}
   <h2 class="subtitle">{status[gruppe[0]]}</h2>
   <table class="table">
     <thead>
       <tr>
         <th>
-          <!-- <input type="checkbox" bind:checked={$selected} value={gruppe}> -->
+          <input type="checkbox" on:click={select(gruppe[0])} bind:group={selectGroup} value={gruppe[0]} >
         </th>
         <th></th>
         <th>Name</th>
@@ -30,7 +46,7 @@
         <th>Telefon</th>
         <th>email</th>
         <th>Geburtstag</th>
-        <th>Info</th>
+        <th>&gt;18</th>
       </tr>
     </thead>
     <tbody>

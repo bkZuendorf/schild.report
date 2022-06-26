@@ -2,6 +2,31 @@ import { Model } from 'objection'
 
 class Schueler extends Model {
   static get tableName () { return 'schueler' }
+  static get virtualAttributes () {
+    return ['anrede', 'akt_halbjahr', 'schueler_in', 'studierende_r', 'berufsbezeichnung_mw', 'volljaehrig']
+  }
+  get anrede () {
+    return (this.Geschlecht === 3 ? 'Herr' : 'Frau')
+  }
+  get schueler_in () {
+    return (this.Geschlecht === 3 ? 'Schüler' : 'Schülerin')
+  }
+  get studierende_r () {
+    return (this.Geschlecht === 3 ? 'Studierender' : 'Studierende')
+  }
+  get berufsbezeichnung_mw () {
+    if (this.fachklasse) return this.Geschlecht === 3 ? this.fachklasse.Bezeichnung : this.fachklasse.Beschreibung_W
+    else return 'Keine Fachklasse zugeordnet'
+  }
+  get volljaehrig () {
+    return this.Volljaehrig === '+'
+  }
+  volljaehrig_bei (datum) {
+    if (!datum || !this.Geburtsdatum) return false
+    var g = new Date(this.Geburtsdatum)
+    var d = new Date(datum)
+    return (d.getFullYear() - g.getFullYear() - ((d.getMonth() > g.getMonth() || (d.getMonth() === g.getMonth() && d.getDay() >= g.getDay())) ? 0 : 1)) >= 18
+  }
   static get relationMappings () {
     return {
       fachklasse: {

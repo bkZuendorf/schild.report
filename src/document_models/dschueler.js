@@ -75,7 +75,7 @@ export class DSchueler {
     get Studierende_r () {
       return (this.Geschlecht === 3 ? 'Studierender' : 'Studierende')
     }
-    get Berufsbezeichnung_mw () {
+    get Berufsbezeichnung () {
       if (this.fachklasse) return this.Geschlecht === 3 ? this.fachklasse.Bezeichnung : this.fachklasse.Beschreibung_W
       else return 'Keine Fachklasse zugeordnet'
     }

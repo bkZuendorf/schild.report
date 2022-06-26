@@ -1,5 +1,6 @@
 import { DErziehungsberechtigung } from './document_models/derziehungsberechtigung';
 import { DSchueler } from './document_models/dschueler'
+import { DSchule } from './document_models/dschule'
 
 const ipcRenderer = require('electron').ipcRenderer
 const Mark = require('mark.js')
@@ -17,13 +18,16 @@ function runMark () {
 
 ipcRenderer.on('props', (event, data) => {
   props = data.svelteProps
-  // weise Typen zu
+  // weise Typen zu >>>
   props.schueler.forEach((s) => {
     Object.setPrototypeOf(s, DSchueler.prototype)
     if(s.erziehungsberechtigung)
       Object.setPrototypeOf(s.erziehungsberechtigung, DErziehungsberechtigung.prototype)
   });
 
+  Object.setPrototypeOf(props.schule, DSchule.prototype)
+  // << Typenzuweisung
+  
   svelte?.$set(props)
   componentPath = data.componentPath
   compiled_module = data.compiled_module
