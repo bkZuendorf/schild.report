@@ -1,7 +1,7 @@
 import { expose } from "comlink";
 import Knex from 'knex'
 import { Model } from 'objection'
-import { Schueler, Versetzung, Schule, Schuelerfoto, Nutzer } from './models.js'
+import { Schueler, Versetzung, Schule, Schuelerfoto, Fach, Nutzer } from './models.js'
 
 class Schild {
   constructor() {
