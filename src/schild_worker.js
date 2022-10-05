@@ -123,6 +123,12 @@ class Schild {
       delete res.SchulLogo;
       delete res.Einstellungen;
       delete res.Einstellungen2;
+      const faecher = await Fach.query()
+        .select('FachKrz', 'Bezeichnung', 'Zeugnisbez')
+        .where('Sichtbar','+')
+        .orderBy('FachKrz')
+
+      res.faecher = faecher
       return res.toJSON()
     } catch (e) {
       throw e;
