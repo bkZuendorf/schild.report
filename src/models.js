@@ -98,6 +98,16 @@ class Schueler extends Model {
         relation: Model.HasOneRelation,
         modelClass: Erziehungsberechtigung,
         join: { from: 'schueler.ID', to: 'schuelererzadr.Schueler_ID' }
+      },
+      kontakte: {
+        relation: Model.HasManyRelation,
+        modelClass: SchuelerAdressen,
+        join: { from: 'schueler.ID', to: 'schueler_allgadr.Schueler_ID' }
+      },
+      telefonkontakte: {
+        relation: Model.HasManyRelation,
+        modelClass: SchuelerTelefone,
+        join: { from: 'schueler.ID', to: 'schuelertelefone.Schueler_ID' }
       }
     }
   }
@@ -290,6 +300,92 @@ class Erziehungsberechtigung extends Model {
     }
   }
 }
+
+class Beschaeftigungsarten extends Model {
+  static get tableName () { return 'k_beschaeftigungsart' }
+}
+
+class Adressarten extends Model {
+  static get tableName () { return 'k_adressart' }
+}
+
+class Ansprechpartner extends Model {
+  static get tableName () { return 'allgadransprechpartner' }
+}
+
+class Adressen extends Model {
+  static get tableName () { return 'k_allgadresse' }
+  static get relationMappings () {
+    return {
+      ort: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Ort,
+        join: { from: 'k_allgadresse.AllgAdrPLZ', to: 'k_ort.PLZ' }
+      }, 
+      art: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Adressarten,
+        join: { from: 'k_allgadresse.AllgAdrAdressart', to: 'k_adressart.ID' }
+      },
+      ansprechPartner: {
+        relation: Model.HasManyRelation,
+        modelClass: Ansprechpartner,
+        join: { from: 'k_allgadresse.ID', to: 'allgadransprechpartner.Adresse_ID' }
+      }
+    }
+  }
+}
+
+class TelefonArt extends Model {
+  static get tableName () { return 'k_telefonart' }
+}
+
+class SchuelerTelefone extends Model {
+  static get tableName () { return 'schuelertelefone' }
+  static get relationMappings () {
+    return {
+      schueler: {
+        relation: Model.HasManyRelation,
+        modelClass: Schueler,
+        join: { from: 'schuelertelefone.Schueler_ID', to: 'schueler.ID' }
+      },
+      art: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: TelefonArt,
+        join: { from: 'schuelertelefone.TelefonArt_ID', to: 'k_telefonart.ID' }
+      }
+    }
+  }
+}
+
+class SchuelerAdressen extends Model {
+  static get tableName () { return 'schueler_allgadr' }
+  static get relationMappings () {
+    return {
+      adresse: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Adressen,
+        join: { from: 'schueler_allgadr.Adresse_ID', to: 'k_allgadresse.ID' }
+      },
+      vertragsArt: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Beschaeftigungsarten,
+        join: { from: 'schueler_allgadr.Vertragsart_ID', to: 'k_beschaeftigungsart.ID' }
+      },
+      ansprechPartner: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Ansprechpartner,
+        join: { from: 'schueler_allgadr.Ansprechpartner_ID', to: 'allgadransprechpartner.Adresse_ID' }
+      },
+      betreuungsLehrer: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Lehrer,
+        join: { from: 'schueler_allgadr.Betreuungslehrer_ID', to: 'k_lehrer.ID' }
+      }
+    }
+  }
+}
+
 class Schule extends Model {
   static get tableName () { return 'eigeneschule' }
   static get virtualAttributes () {
@@ -329,5 +425,12 @@ export {
   Ort,
   Nutzer,
   Jahrgang,
-  Erziehungsberechtigung
+  Erziehungsberechtigung,
+  Beschaeftigungsarten,
+  Adressen,
+  Adressarten,
+  SchuelerAdressen,
+  Ansprechpartner,
+  SchuelerTelefone,
+  TelefonArt
 }

@@ -22,7 +22,7 @@
   } from "./../stores.js";
   import { join } from "path";
 
-  export let schule;
+  export let sdata;
 
   function callback(failure, result) {
     if (failure) {
@@ -57,7 +57,6 @@
       console.log(e);
     }
   }
-
   let props = {}
   $: {
       // übergebe Auswahlinformation an das schuelerobjekt 
@@ -75,7 +74,9 @@
           // mache alle Informationen über das "auswahl" Objekt verfügbar
           // -> es ist nur ein Import im Dokument erforderlich, der einfach erweitert werden kann 
           auswahl: { 
-              schule: schule, 
+              schule: sdata.schule, 
+              faecher: sdata.faecher, 
+              orte: sdata.orte, 
               klasse: $klasse, 
               schueler: $selected,
               jahr: $jahr,
@@ -84,7 +85,7 @@
               db: $configData.db,
             },
           // alternative Nutzung: 
-          schule: schule,
+          schule: sdata.schule,
           klasse: $klasse,
           schueler: $selected,
           jahr: $jahr,

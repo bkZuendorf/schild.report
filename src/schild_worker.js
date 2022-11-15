@@ -1,7 +1,7 @@
 import { expose } from "comlink";
 import Knex from 'knex'
 import { Model } from 'objection'
-import { Schueler, Versetzung, Schule, Schuelerfoto, Fach, Nutzer } from './models.js'
+import { Schueler, Versetzung, Schule, Schuelerfoto, Fach, Nutzer, Adressen, Ort } from './models.js'
 
 class Schild {
   constructor() {
@@ -76,16 +76,20 @@ class Schild {
           this.where('Geloescht', '-')
           .andWhere('Gesperrt', '-')
           .andWhere('ID', id)})
-        .withGraphFetched(`
-          [abschnitte.[noten.fach, lehrer],
-          fachklasse.[fach_gliederungen], versetzung, bk_abschluss,
-          bk_abschluss_faecher.fach, fhr_abschluss, fhr_abschluss_faecher.fach,
-          abi_abschluss, abi_abschluss_faecher.fach, vermerke, sprachenfolgen.fach, 
-          zubringerschule, erziehungsberechtigung.[ort]]
-        `)
-        .modifyGraph('abschnitte', builder => {
-          builder.orderBy('ID');
-        }).first();
+          .withGraphFetched(`
+              [
+                abschnitte.[noten.fach, lehrer],
+                fachklasse.[fach_gliederungen], versetzung, bk_abschluss,
+                bk_abschluss_faecher.fach, fhr_abschluss, fhr_abschluss_faecher.fach,
+                abi_abschluss, abi_abschluss_faecher.fach, vermerke, sprachenfolgen.fach, 
+                zubringerschule, erziehungsberechtigung.[ort], 
+                kontakte.[adresse, vertragsArt, ansprechPartner, betreuungsLehrer], 
+                telefonkontakte.[art]
+              ]
+          `)
+          .modifyGraph('abschnitte', builder => {
+            builder.orderBy('ID');
+          }).first();
       return res.toJSON()
     } catch (e) {
       throw e;
@@ -117,19 +121,64 @@ class Schild {
     }
   }
 
+  async getStaticData() {
+    return { 
+      schule: await this.getSchule(),
+      orte: await this.getOrte(),
+      faecher: await this.getFaecher()
+    }
+  }
+
   async getSchule() {
     try {
       const res = await Schule.query().first()
       delete res.SchulLogo;
       delete res.Einstellungen;
       delete res.Einstellungen2;
-      const faecher = await Fach.query()
-        .select('FachKrz', 'Bezeichnung', 'Zeugnisbez')
-        .where('Sichtbar','+')
-        .orderBy('FachKrz')
 
-      res.faecher = faecher
       return res.toJSON()
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getOrte() {
+    try {
+      const res = { 
+          orte: await Ort.query()
+                .whereRaw(`Sichtbar='+'`)
+                .select('ID', 'PLZ', 'Bezeichnung', 'Kreis')
+                .orderBy('Bezeichnung', 'desc')
+      }
+
+      return res
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getFaecher() {
+    try {
+      const res = { 
+          faecher: await Fach.query()
+            .select('FachKrz', 'Bezeichnung', 'Zeugnisbez')
+            .where('Sichtbar','+')
+            .orderBy('FachKrz')
+        }
+      return res
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getAdressen() {
+    try {
+      const res = await Adressen.query()
+        .withGraphFetched(`
+          [ort,art,ansprechPartner]
+        `) 
+        .whereRaw(`Sichtbar='+'`)
+      return res
     } catch (e) {
       throw e;
     }

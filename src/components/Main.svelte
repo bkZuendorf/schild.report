@@ -7,7 +7,8 @@
   import Start from "./Start.svelte";
   import { schild } from "./App.svelte";
 
-  let schule = schild.getSchule();
+  let sdata = schild.getStaticData()
+
   const sidebar_components = [Einstellungen, Start];
   $component = Start
 
@@ -30,14 +31,14 @@
       </section>
     {/if}
     <div class:show style="height: -webkit-fill-available;">
-      {#await schule then schule}
-        <Dokument {schule} bind:this={$dokument_component}/>
+      {#await sdata then sdata}
+        <Dokument {sdata} bind:this={$dokument_component}/>
       {/await}
     </div>
   </div>
   <div class="header">
-    {#await schule then schule}
-      <Navbar {schule} />
+    {#await sdata then sdata}
+      <Navbar schule = {sdata.schule} />
     {/await}
   </div>
 </div>

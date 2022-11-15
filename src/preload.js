@@ -1,6 +1,8 @@
 import { DErziehungsberechtigung } from './document_models/derziehungsberechtigung';
 import { DSchueler } from './document_models/dschueler'
 import { DSchule } from './document_models/dschule'
+import { DOrte } from './document_models/dorte'
+import { DFaecher } from './document_models/dfaecher'
 
 const ipcRenderer = require('electron').ipcRenderer
 const Mark = require('mark.js')
@@ -22,10 +24,12 @@ ipcRenderer.on('props', (event, data) => {
   props.schueler.forEach((s) => {
     Object.setPrototypeOf(s, DSchueler.prototype)
     if(s.erziehungsberechtigung)
-      Object.setPrototypeOf(s.erziehungsberechtigung, DErziehungsberechtigung.prototype)
+      s.erziehungsberechtigung = Object.assign(new DErziehungsberechtigung(), s.erziehungsberechtigung )
   });
 
   Object.setPrototypeOf(props.schule, DSchule.prototype)
+  Object.setPrototypeOf(props.auswahl.orte, DOrte.prototype)
+  Object.setPrototypeOf(props.auswahl.faecher, DFaecher.prototype)
   // << Typenzuweisung
   
   svelte?.$set(props)
