@@ -76,6 +76,7 @@
           auswahl: { 
               schule: sdata.schule, 
               faecher: sdata.faecher, 
+              fachklassen: sdata.fachklassen, 
               orte: sdata.orte, 
               klasse: $klasse, 
               schueler: $selected,

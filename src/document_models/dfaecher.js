@@ -1,17 +1,19 @@
 export class DFaecher {
-    constructor() {
-        this.faecher = []
+    constructor(l) {
+        this.list = l
     }
     byZeugnis(name) {
-        return this.orte.find(o=> o.Zeugnisbez==name)
+        return this.list.find(o=> o.Zeugnisbezeichnung==name)
     }
-    byKurzbezeichnung(name) {
-        return this.orte.find(o=> o.FachKrz==name)
+    byName(name) {
+        return this.list.find(o=> o.Name==name)
     }
-    zeugnisByKurzbezeichnung(name) {
-        return this.orte.find(o=> o.FachKrz==name)?.Zeugnisbez || ""
+    zeugnisByName(name) {
+        return this.list.find(o=> o.Name==name)?.Zeugnisbezeichnung || ""
     }
     byBezeichnung(name) {
-        return this.orte.find(o=> o.Bezeichnung==name)
+        return this.list.find(o=> o.Bezeichnung==name)
     }
+
+    static Assign(list) { return new DFaecher(list)  }
 }

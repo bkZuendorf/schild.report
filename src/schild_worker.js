@@ -1,7 +1,7 @@
 import { expose } from "comlink";
 import Knex from 'knex'
 import { Model } from 'objection'
-import { Schueler, Versetzung, Schule, Schuelerfoto, Fach, Nutzer, Adressen, Ort } from './models.js'
+import { Schueler, Versetzung, Schule, Schuelerfoto, Fach, Nutzer, Adressen, Ort, Fachklasse} from './models.js'
 
 class Schild {
   constructor() {
@@ -125,7 +125,8 @@ class Schild {
     return { 
       schule: await this.getSchule(),
       orte: await this.getOrte(),
-      faecher: await this.getFaecher()
+      faecher: await this.getFaecher(),
+      fachklassen: await this.getFachklassen()
     }
   }
 
@@ -144,14 +145,11 @@ class Schild {
 
   async getOrte() {
     try {
-      const res = { 
-          orte: await Ort.query()
+      let res = await Ort.query()
                 .whereRaw(`Sichtbar='+'`)
-                .select('ID', 'PLZ', 'Bezeichnung', 'Kreis')
-                .orderBy('Bezeichnung', 'desc')
-      }
-
-      return res
+                .select('ID', 'PLZ', 'Bezeichnung as Name', 'Kreis')
+                .orderBy('Bezeichnung', 'asc')
+        return res
     } catch (e) {
       throw e;
     }
@@ -159,13 +157,24 @@ class Schild {
 
   async getFaecher() {
     try {
-      const res = { 
-          faecher: await Fach.query()
-            .select('FachKrz', 'Bezeichnung', 'Zeugnisbez')
+      let res=await Fach.query()
+            .select('FachKrz as Name', 'Bezeichnung', 'Zeugnisbez as Zeugnisbezeichnung', 'StatistikKrz as StatistikName')
             .where('Sichtbar','+')
             .orderBy('FachKrz')
-        }
-      return res
+        return res
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getFachklassen() {
+    try {
+      let res = await Fachklasse.query()
+            .select('BKIndex', 'FKS as Fachklasse', 'AP as Auspraegung', 'Bezeichnung as Bildungsgang', 'BKIndexTyp as Gliederung', 'Ebene1Klartext as Schulform', 'Ebene2Klartext as Zeugniskopf', 'Ebene3Klartext as Bildungsgangart')
+            .where('Sichtbar','+')
+            .orderBy([{column:'BKIndex'},{column:'FKS'}])
+      
+        return res
     } catch (e) {
       throw e;
     }

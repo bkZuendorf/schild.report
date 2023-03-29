@@ -1,14 +1,15 @@
 export class DOrte {
-    constructor() {
-        this.orte = []
-    }
+    constructor(l) {
+        this.list = l
+    }    
     nameByPLZ(PLZ) {
-        return this.orte.find(o=> o.PLZ==PLZ)?.Bezeichnung || ""
+        return this.list.find(o=> o.PLZ==PLZ)?.Bezeichnung || ""
     }
     byPLZ(PLZ) {
-        return this.orte.find(o=> o.PLZ==PLZ) 
+        return this.list.find(o=> o.PLZ==PLZ) 
     }
     byName(name) {
-        return this.orte.find(o=> o.Bezeichnung==name)
+        return this.list.find(o=> o.Bezeichnung==name)
     }
+    static Assign(list) { return new DOrte(list)  }
 }

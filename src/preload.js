@@ -3,6 +3,7 @@ import { DSchueler } from './document_models/dschueler'
 import { DSchule } from './document_models/dschule'
 import { DOrte } from './document_models/dorte'
 import { DFaecher } from './document_models/dfaecher'
+import { DFachklassen } from './document_models/dfachklassen'
 
 const ipcRenderer = require('electron').ipcRenderer
 const Mark = require('mark.js')
@@ -28,9 +29,10 @@ ipcRenderer.on('props', (event, data) => {
   });
 
   Object.setPrototypeOf(props.schule, DSchule.prototype)
-  Object.setPrototypeOf(props.auswahl.orte, DOrte.prototype)
-  Object.setPrototypeOf(props.auswahl.faecher, DFaecher.prototype)
-  // << Typenzuweisung
+  props.auswahl.orte = DOrte.Assign(props.auswahl.orte)
+  props.auswahl.faecher = DFaecher.Assign(props.auswahl.faecher)
+  props.auswahl.fachklassen = DFachklassen.Assign(props.auswahl.fachklassen)
+ // << Typenzuweisung
   
   svelte?.$set(props)
   componentPath = data.componentPath
