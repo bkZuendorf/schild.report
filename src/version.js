@@ -1,1 +1,1 @@
-export const VERSION = { buildVersion: 'development', gitHash: 'development', production: false }
+export const VERSION = { buildVersion: '1.0', gitHash: 'development', production: false }

@@ -1,4 +1,5 @@
 <script>
+  import {VERSION} from '../version';
 	import { fade } from 'svelte/transition';
   import Autocomplete from "./Autocomplete.svelte";
   import Schueler from "./Schueler.svelte";
@@ -27,7 +28,7 @@
   import { writeFile, existsSync, mkdirSync } from "fs";
   import { shell } from "electron";
   import snarkdown from "snarkdown";
-
+ 
   export let schule;
   let zurueck_zu;
 
@@ -134,7 +135,7 @@
       on:click={() => ($component = Start)}>
       <b>{schule.Bezeichnung1 || 'schild.report'}</b>
       <br />
-      {schule.Bezeichnung2 || ''}
+      {schule.Bezeichnung2 || ''} {VERSION.buildVersion}
     </div>
     <Autocomplete bind:zurueck_zu />
     {#if !$component}
