@@ -170,7 +170,7 @@ class Schild {
   async getFachklassen() {
     try {
       let res = await Fachklasse.query()
-            .select('BKIndex', 'FKS as Fachklasse', 'AP as Auspraegung', 'Bezeichnung as Bildungsgang', 'BKIndexTyp as Gliederung', 'Ebene1Klartext as Schulform', 'Ebene2Klartext as Zeugniskopf', 'Ebene3Klartext as Bildungsgangart')
+            .select('BKIndex', 'FKS as Fachklasse', 'AP as Auspraegung', 'Bezeichnung as Bildungsgang', 'BKIndexTyp as Gliederung', 'Ebene1Klartext as Fachrichtung', 'Ebene2Klartext as Schwerpunkt', 'Ebene3Klartext as Zeugniskopf')
             .where('Sichtbar','+')
             .orderBy([{column:'BKIndex'},{column:'FKS'}])
       
